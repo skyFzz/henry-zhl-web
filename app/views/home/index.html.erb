@@ -1,3 +1,56 @@
-<h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
-<p>hi this is haoling's website</p>
+<h1>HZhou's Weblogsite</h1>
+<p>zhou.3890@osu.edu</p>
+<a href="https://github.com/skyFzz/henry-zhl-web">Source code on Github</a>
+<p>Daily Quote: Clear thinking becomes clear writing; one can't exist without the other. - William Zinsser</p>
+
+<p>---------------------------------------------------------------------------------------------------------------------------------------------------</p>
+<h2>Google Summer of Code 2024</h2>
+<h3>GSoC Blog #1 7/12/2024</h3>
+<p>
+This summer, after completing my junior year, I was honored to have the opportunity working with Dr. Jean Luca Bez and Dr. Suren Byna on the <a href="https://github.com/hpc-io/h5bench">h5bench</a>, an open-source benchmarking project designed to simulate runnning sync/async HDF5 I/O on HPC machines. This post will cover mostly what I have learned, produced, planned, and thoughts over the first six weeks.
+</p>
+
+<p>
+First of all, let's define some of the terms here. HDF5 stands for Hierarchical Data Format 5. Unlike other data storage formats (JSON, CSV, XML...), HDF5 is not only a container that manages data similar to a file system, but also a powerful library that gives you the ability to perform I/O (Inputs/Outputs) operations between memory and file. One of the reasons this tool is commonly used by HPC applications is that it also supports MPI I/O, which is a protocol for parallel computing (you can think of it as the parallel version of POSIX). With exabytes of data and high frequencies of usage for analysis in scientific studies, HDF5 is perfect for the job. Essentially, h5bench is a software that tests the hardware's performance through HDF5 (it also provides other benchmark kernels such as <a href="https://github.com/AMReX-Codes/amrex/tree/9c412974de2ac0496878acf1f7e8d6c426f535e7">AMReX</a>, <a href="https://github.com/Parallel-NetCDF/E3SM-IO/tree/a1a08c533d2f7fc770dc432dc98359a071ad96cd">E3SM-IO</a>, <a href="https://github.com/LLNL/MACSio/tree/7f19af30b7753d2980fd6b833e831ff4b42b4fb0">MACSio</a>, and <a href="https://github.com/openPMD/openPMD-api/tree/32cb87d1b0012493287204d7a8c78af9a1141710">openPMD-api</a>, but my job focuses on using vanilla HDF5 I/O).
+</p>
+
+<p>
+So, what I have done so far? Frist, my job is to allow users to tune input parameters regarding data compression, and make sure h5bench prints accurate benchmark results with the intended compression algorithm applied to their datasets. h5bench's frondend is written in Python, which takes an input of a JSON file from user and parses it into a CFG configuration file that can be read by the backend later, which is written in C. I created a new enum struct and made user able to specify one from a range of compression algorithms (SZ3, ZFP, LZ4, GZIP, and other pre-defined algorithms). I also made it possible to apply these algorithms to the datasets, so the .h5 (an HDF5 file) would contain chunks of compressed data after multiple H5Dwrite calls. 
+</p>
+
+<p>
+Next, the challenges and gains. Throughout the first six weeks, 30% of the time was spent on understanding the newest version of h5bench and HDF5 by reading through C source codes and documentations, and asking many dumb questions to my mentors (thanks to their patience and great answers :D). Writing code is fairly easy after I really understood what the program is doing. By that I mean you have to understand every line in almost all functions and how each and every variables change. 40% of the time was used on debugging and testing the compression algorithm, mainly SZ3. To make code behaves correctly is another level of difficulty. Most of the issues resulted from failing to configure the application and dependent libraries correctly. Without necessary macros enabled during the build process, features like compression filter plugin will not run. As I was also new to CMake and HPC environment, I learned that new envrionment variables will be reset for every new session, even if you requested a compute node resource. Besides getting used to the standard build sequence: "cmake ..", "make", "make install", I also learned to use "ccmake .." to examine the flags of the compiled program. The rest of time I learned more about parallel computing, HDF5, compression algorithms, by reading some papers and documentations. A lot of notes were taken (I must say a good note taking system is the game changer). Last but not the least, I also spent times synchronizing online and offline with my mentors to discuess problems. Without their help, I can never make this far.
+</p>
+
+<p>
+My next phase will tackle these problems, here I am just offering a list:
+</p>
+
+<ul>
+
+<li>
+Test applying filter with other compression algorithms, and with different dimension layout of the dataset
+</li>
+
+<li>
+Add decompression capability
+</li>
+
+<li>
+Allow users to tune the auxiliary parameters for controlling the behavior of a certain compression filter
+H5Pset_filter(COMPRESS_INFO.dcpl_id, H5Z_FILTER_SZ3, H5Z_FLAG_MANDATORY, 0, NULL);
+cd_nelmts
+cd_values[]
+</li>
+
+<li>
+Print additional benchmark results to indicate what and how the compression filter is applied, and the compression ratio
+</li>
+
+</ul>
+
+<p>---------------------------------------------------------------------------------------------------------------------------------------------------</p>
+<h2>Competitive Programming Journal</h2>
+<p>---------------------------------------------------------------------------------------------------------------------------------------------------</p>
+<h2>Others</h2>
+<p>---------------------------------------------------------------------------------------------------------------------------------------------------</p>
